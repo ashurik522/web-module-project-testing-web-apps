@@ -70,14 +70,73 @@ test('renders "email must be a valid email address" if an invalid email is enter
 test('renders "lastName is a required field" if an last name is not entered and the submit button is clicked', async () => {
     render(<ContactForm />)
 
+    const firstNameInput = screen.getByLabelText(/first name*/i)
+    const emailInput = screen.getByLabelText(/email*/i)
+    const button = screen.getByRole(/button/, { name: /Submit/i })
+    
+    userEvent.type(firstNameInput, 'Blade')
+    userEvent.type(emailInput, 'blade@thomas.com')
+    userEvent.click(button)
+
+    const errorMessage = await screen.findByText(/lastName is a required field/i)
+
+    expect(errorMessage).toBeInTheDocument()
 });
 
 test('renders all firstName, lastName and email text when submitted. Does NOT render message if message is not submitted.', async () => {
     render(<ContactForm />)
 
+    const firstNameInput = screen.getByLabelText(/first name*/i)
+    const lastNameInput = screen.getByLabelText(/last name*/i)
+    const emailInput = screen.getByLabelText(/email*/i)
+    const button = screen.getByRole(/button/, { name: /Submit/i })
+    
+    userEvent.type(firstNameInput, 'Blade')
+    userEvent.type(lastNameInput, 'Thomas')
+    userEvent.type(emailInput, 'blade@thomas.com')
+
+    userEvent.click(button)
+
+    const firstName = await screen.findByText('Blade')
+    const lastName = await screen.findByText('Thomas')
+    const email = await screen.findByText('blade@thomas.com')
+    
+    
+    expect(firstName).toBeInTheDocument();
+    expect(lastName).toBeInTheDocument();
+    expect(email).toBeInTheDocument();
+
+    expect(screen.queryByTestId(/messageDisplay/i)).not.toBeInTheDocument()
+
 });
 
 test('renders all fields text when all fields are submitted.', async () => {
     render(<ContactForm />)
+
+    const firstNameInput = screen.getByLabelText(/first name*/i)
+    const lastNameInput = screen.getByLabelText(/last name*/i)
+    const emailInput = screen.getByLabelText(/email*/i)
+    const messageInput = screen.getByLabelText(/message/i)
+    const button = screen.getByRole(/button/, { name: /Submit/i })
+    
+    userEvent.type(firstNameInput, 'Blade')
+    userEvent.type(lastNameInput, 'Thomas')
+    userEvent.type(emailInput, 'blade@thomas.com')
+    userEvent.type(messageInput, 'Hello world')
+
+    userEvent.click(button)
+
+    const firstName = await screen.findByText('Blade')
+    const lastName = await screen.findByText('Thomas')
+    const message = await screen.findByText('Hello world')
+    const email = await screen.findByText('blade@thomas.com')
+    
+    
+    expect(firstName).toBeInTheDocument();
+    expect(lastName).toBeInTheDocument();
+    expect(message).toBeInTheDocument();
+    expect(email).toBeInTheDocument();
+
+
 
 });
